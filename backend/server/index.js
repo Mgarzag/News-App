@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const exphbs = require('express-handlebars');
+const customAuthMiddleware = require('./middleware/custom-auth-middleware');
 
 // Requiring our models for syncing
 const db = require('./models/index');
@@ -18,6 +19,11 @@ const PORT = process.env.PORT || 8080;
 // Express middleware that allows POSTing data
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// use the cookie-parser to help with auth token,
+// it must come before the customAuthMiddleware
+app.use(cookieParser());
+app.use(customAuthMiddleware);
 
 // serve up the public folder so we can request static
 // assets from the client
