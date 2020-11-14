@@ -2,7 +2,7 @@
   "development": {
     "username": "Garza", 
     "password": null, 
-    "database": "custom_auth_tutorial", 
+    "database": "news_app", 
     "host": "127.0.0.1", 
     "dialect": "postgres"
   },
