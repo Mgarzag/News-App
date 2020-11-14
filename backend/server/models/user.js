@@ -1,3 +1,4 @@
+var bcrypt = require("bcryptjs");
 
 const {
   Model

@@ -1,4 +1,9 @@
-const express = require('express');
+var express = require('express');
+var bodyParser = require('body-parser');
+var path = require('path');
+var session = require('expr`ess-session');
+var models = require('../models');
+var Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const router = express.Router();
@@ -11,6 +16,29 @@ const { User } = require("../models");
 /* Register Route
 ========================================================= */
 router.post('/register', async (req, res) => {
+  var matched_users_promise = models.user.findAll({
+    where:  Sequelize.or(
+            {username: req.body.username},
+            {email: req.body.email}
+        )
+});
+matched_users_promise.then(function(users){ 
+  if(users.length == 0){
+      const passwordHash = bcrypt.hashSync(req.body.password,10);
+      models.user.create({
+          username: req.body.username,
+          email: req.body.email,
+          password: passwordHash
+      }).then(function(){
+          let newSession = req.session;
+          newSession.email = req.body.email;
+          res.redirect('/');
+      });
+  }
+  else{
+      res.render('account/register',{errors: "Username or Email already in user"});
+  }
+});
 
     // hash the password provided by the user with bcrypt so that
     // we are never storing plain text passwords. This is crucial
@@ -39,6 +67,27 @@ router.post('/register', async (req, res) => {
   /* Login Route
   ========================================================= */
   router.post('/login', async (req, res) => {
+    var matched_users_promise = models.user.findAll({
+      where: Sequelize.and(
+          {email: req.body.email},
+      )
+  });
+  matched_users_promise.then(function(users){ 
+    if(users.length > 0){
+        let user = users[0];
+        let passwordHash = user.password;
+        if(bcrypt.compareSync(req.body.password,passwordHash)){
+            req.session.email = req.body.email;
+            res.redirect('/');
+        }
+        else{
+            res.redirect('/register');
+        }
+    }
+    else{
+        res.redirect('/login');
+    }
+});
     const { username, password } = req.body;
   
     // if the username / password is missing, we use status code 400
