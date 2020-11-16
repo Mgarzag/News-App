@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
-var session = require('expr`ess-session');
+var session = require('express-session');
 var models = require('../models');
 var Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs');
@@ -16,7 +16,7 @@ const { User } = require("../models");
 /* Register Route
 ========================================================= */
 router.post('/register', async (req, res) => {
-  var matched_users_promise = models.user.findAll({
+  var matched_users_promise = models.User.findAll({
     where:  Sequelize.or(
             {username: req.body.username},
             {email: req.body.email}
@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
 matched_users_promise.then(function(users){ 
   if(users.length == 0){
       const passwordHash = bcrypt.hashSync(req.body.password,10);
-      models.user.create({
+      models.User.create({
           username: req.body.username,
           email: req.body.email,
           password: passwordHash
@@ -150,4 +150,4 @@ matched_users_promise.then(function(users){
   });
   
   // export the router so we can pass the routes to our server
-  module.exports = router;
+  module.exports = {"AccountRoutes" : router};
