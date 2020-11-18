@@ -67,7 +67,16 @@ matched_users_promise.then(function(users){
   /* Login Route
   ========================================================= */
   router.post('/login', async (req, res) => {
-    var matched_users_promise = models.user.findAll({
+    const { username, password } = req.body;
+  
+    // if the username / password is missing, we use status code 400
+    // indicating a bad request was made and send back a message
+    if (!username || !password) {
+      return res.status(400).send(
+        'Request missing username or password param'
+      );
+    } else{ 
+    var matched_users_promise = models.User.findAll({
       where: Sequelize.and(
           {email: req.body.email},
       )
@@ -88,28 +97,20 @@ matched_users_promise.then(function(users){
         res.redirect('/login');
     }
 });
-    const { username, password } = req.body;
+}
   
-    // if the username / password is missing, we use status code 400
-    // indicating a bad request was made and send back a message
-    if (!username || !password) {
-      return res.status(400).send(
-        'Request missing username or password param'
-      );
-    }
+  //   try {
+  //     let user = await User.authenticate(username, password)
   
-    try {
-      let user = await User.authenticate(username, password)
+  //     user = await user.authorize();
   
-      user = await user.authorize();
+  //     return res.json(user);
   
-      return res.json(user);
+  //   } catch (err) {
+  //     return res.status(400).send('invalid username or password');
+  //   }
   
-    } catch (err) {
-      return res.status(400).send('invalid username or password');
-    }
-  
-  });
+   });
   
   /* Logout Route
   ========================================================= */
