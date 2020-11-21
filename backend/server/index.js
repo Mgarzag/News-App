@@ -10,9 +10,6 @@ const session = require('express-session');
 // Imports the account route created in user-controller
 var AccountRoutes = require('./controllers/user-controller');
 
-// Imports the home route created in home-controller
-var HomeRoutes = require('./controllers/home-controller');
-
 // Requiring our models for syncing
 const db = require('./models/index');
 
@@ -48,18 +45,8 @@ app.use('/',AccountRoutes.AccountRoutes);
 // sync our sequelize models and then start server
 // force: true will wipe our database on each server restart
 // this is ideal while we change the models around
-db.sequelize.sync({ force: true }).then(() => {
-
-  // middleware code will check if the user is logged in by checking if email a user is present in the session
-  app.use(function(req,res,next){
-    if(req.session.email == null || req.session.email.length ==0 ){
-        res.redirect('/login'); 
-    }
-    else{
-      next();
-    }
-  });
-  app.use('/',HomeRoutes.HomeRoutes);
+db.sequelize.sync({ force: false }).then(() => {
+  
   
     // inside our db sync callback, we start the server
     // this is our way of making sure the server is not listening 

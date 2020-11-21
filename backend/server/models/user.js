@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     // store strings on the database rather than the raw
     // passwords. Check out the docs for more detail
     if (bcrypt.compareSync(password, user.password)) {
-      return user.authorize();
+      return user.id;
     }
 
     throw new Error('invalid password');
@@ -35,18 +35,17 @@ module.exports = (sequelize, DataTypes) => {
   // in order to define an instance method, we have to access
   // the User model prototype. This can be found in the
   // sequelize documentation
-  User.prototype.authorize = async function () {
+  User.authorize = async function (userId) {
     const { AuthToken } = sequelize.models;
     const user = this
 
     // create a new auth token associated to 'this' user
     // by calling the AuthToken class method we created earlier
     // and passing it the user id
-    const authToken = await AuthToken.generate(this.id);
+    const authToken = await AuthToken.generate(userId);
 
     // addAuthToken is a generated method provided by
     // sequelize which is made for any 'hasMany' relationships
-    await user.addAuthToken(authToken);
 
     return { user, authToken }
   };
