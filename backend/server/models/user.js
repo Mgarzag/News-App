@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
 
-  User.prototype.logout = async function (token) {
+  User.logout = async function (token) {
 
     // destroy the auth token record that matches the passed token
     sequelize.models.AuthToken.destroy({ where: { token } });

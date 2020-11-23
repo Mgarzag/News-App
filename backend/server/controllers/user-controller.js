@@ -39,7 +39,6 @@ router.post('/register', async (req, res) => {
 /* Login Route
 ========================================================= */
 router.post('/login', async (req, res) => {
-  console.log(req.body)
   const { username, password } = req.body;
 
   // if the username / password is missing, we use status code 400
@@ -52,9 +51,9 @@ router.post('/login', async (req, res) => {
 
   try {
     let user = await User.authenticate(username, password)
-console.log(user)
+
     user = await User.authorize(user);
-    
+
     return res.json(user);
 
   } catch (err) {
@@ -79,7 +78,7 @@ router.delete('/logout', async (req, res) => {
   // the authToken should be missing at this point, check anyway
   if (user && authToken) {
     await req.user.logout(authToken);
-    return res.status(204).send()
+    return res.status(204).send("Logged out")
   }
 
   // if the user missing, the user is not logged in, hence we
