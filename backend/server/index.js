@@ -61,7 +61,7 @@ app.use('/',AccountRoutes.AccountRoutes);
 // sync our sequelize models and then start server
 // force: true will wipe our database on each server restart
 // this is ideal while we change the models around
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync().then(() => {
   
   
     // inside our db sync callback, we start the server
@@ -71,3 +71,4 @@ db.sequelize.sync({ force: false }).then(() => {
       console.log(`App listening on PORT ${PORT}`);
     });
   });
+

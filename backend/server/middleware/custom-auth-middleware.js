@@ -21,7 +21,9 @@ module.exports = async function(req, res, next) {
     // user to the req object so we can use it in our routes
     if (authToken) {
       req.user = authToken.User;
+      
     }
   }
+console.log(token)
   next();
 }
