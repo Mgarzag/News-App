@@ -13,7 +13,7 @@ var AccountRoutes = require('./controllers/user-controller');
 const db = require('./models/index');
 
 // directory references
-const clientDir = path.join(__dirname, '../client');
+const clientDir = path.join(__dirname, 'frontend');
 
 // set up the Express App
 const app = express();
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // configure express
-app.set('view engine','js');
+app.set('view engine','frontend/js');
 
 // use the cookie-parser to help with auth token,
 // it must come before the customAuthMiddleware
@@ -34,6 +34,8 @@ app.use(customAuthMiddleware);
 // serve up the public folder so we can request static
 // assets from the client
 app.use(express.static(`${clientDir}/public`));
+
+
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
